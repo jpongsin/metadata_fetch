@@ -5,6 +5,10 @@ set(CMAKE_C_STANDARD 11)
 
 ##dependencies
 if(WIN32)
+    if(NOT FFMPEG_ROOT)
+        set(FFMPEG_ROOT $ENV{FFMPEG_ROOT})
+    endif()
+    
     include_directories("${FFMPEG_ROOT}/include")
     link_directories("${FFMPEG_ROOT}/lib")
     set(FFMPEG_LIBS avcodec avformat swscale avutil)
