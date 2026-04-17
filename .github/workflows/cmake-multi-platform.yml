@@ -53,12 +53,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev libavutil-dev pkg-config
 
-    - name: Setup FFmpeg (Windows)
-      if: runner.os == 'Windows'
-      uses: FedericoCarboni/setup-ffmpeg@v3.1
-      id: setup-ffmpeg
-      with:
-        linking-type: shared
+    - name: Install FFmpeg on Windows
+      run: |
+        choco install ffmpeg -y
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -75,7 +72,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        ${{ runner.os == 'Windows' && format('-DFFMPEG_ROOT={0}', steps.setup-ffmpeg.outputs.ffmpeg-path) || '' }}
+        -DFFMPEG_ROOT="C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg"
         -S ${{ github.workspace }}
 
     - name: Build
