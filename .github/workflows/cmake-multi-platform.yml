@@ -54,6 +54,7 @@ jobs:
         sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev libavutil-dev pkg-config
 
     - name: Install FFmpeg on Windows
+      if: runner.os == 'Windows'
       run: |
         choco install ffmpeg -y
 
