@@ -46,11 +46,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6.0.2
+    
+    - name: Install FFmpeg development libraries
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+        sudo apt-get update
+        sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev libavutil-dev pkg-config
 
-
-    - name: Setup FFmpeg
-      uses: federicocarboni/setup-ffmpeg@v3.1
-        
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
