@@ -4,13 +4,23 @@ project(metadata_fetch C)
 set(CMAKE_C_STANDARD 11)
 
 ##dependencies
-find_package(PkgConfig REQUIRED)
+if(WIN32)
+        find_package(FFMPEG REQUIRED)
+else()
+        find_package(PkgConfig REQUIRED)
+        
+        pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
+                libavcodec libavformat libswscale libavutil)
+endif()
 
-pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
-        libavcodec libavformat libswscale libavutil)
 
 add_executable(metadata_fetch src/main.c)
 
-target_link_libraries(metadata_fetch PRIVATE PkgConfig::FFMPEG)
+if (WIN32)
+        target_include_directories(metadata_fetch PRIVATE ${FFMPEG_INCLUDE_DIRS})
+        target_link_libraries(metadata_fetch PRIVATE ${FFMPEG_LIBRARIES})
+else()
 
-target_link_libraries(metadata_fetch PRIVATE m)
+        target_link_libraries(metadata_fetch PRIVATE PkgConfig::FFMPEG)
+        target_link_libraries(metadata_fetch PRIVATE m)
+endif()
