@@ -5,22 +5,21 @@ set(CMAKE_C_STANDARD 11)
 
 ##dependencies
 if(WIN32)
-        find_package(FFMPEG REQUIRED)
+    include_directories("${FFMPEG_ROOT}/include")
+    link_directories("${FFMPEG_ROOT}/lib")
+    set(FFMPEG_LIBS avcodec avformat swscale avutil)
 else()
         find_package(PkgConfig REQUIRED)
         
         pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
                 libavcodec libavformat libswscale libavutil)
+        set(FFMPEG_LIBS PkgConfig::FFMPEG)
 endif()
 
 
 add_executable(metadata_fetch src/main.c)
+target_link_libraries(metadata_fetch PRIVATE ${FFMPEG_LIBS})
 
-if (WIN32)
-        target_include_directories(metadata_fetch PRIVATE ${FFMPEG_INCLUDE_DIRS})
-        target_link_libraries(metadata_fetch PRIVATE ${FFMPEG_LIBRARIES})
-else()
-
-        target_link_libraries(metadata_fetch PRIVATE PkgConfig::FFMPEG)
+if (NOT WIN32)
         target_link_libraries(metadata_fetch PRIVATE m)
 endif()
